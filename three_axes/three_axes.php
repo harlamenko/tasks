@@ -1,5 +1,7 @@
 <?php
 
+$write_result = require '../utils/write_result.php';
+
 function parse_lines($file) {
     $lines_count = fgets($file);
     $lines = [];
@@ -39,6 +41,8 @@ function humanize_match_info($match) {
 }
 
 function main() {
+    global $write_result;
+
     $file = fopen('./input.txt','r') or die("не удалось открыть файл с входными данными");
     $money = 0;
     $bets = parse_lines($file);

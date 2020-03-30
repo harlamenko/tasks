@@ -1,4 +1,5 @@
 <?php
+$write_result = require '../utils/write_result.php';
 
 function fill_segment_zeros($seg) {
     return str_pad(trim($seg), 4, 0, STR_PAD_LEFT);
@@ -28,6 +29,8 @@ function write_result($result) {
 }
 
 function main() {
+    global $write_result;
+
     $file = fopen('./input.txt','r') or die("не удалось открыть файл с входными данными");
     $IPv6_segments_len = 8;
     $results = [];
