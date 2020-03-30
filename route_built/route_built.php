@@ -1,5 +1,8 @@
 <?php
 
+// TODO: порефакторить
+
+$results = [];
 $write_result = require '../utils/write_result.php';
 
 function parse_connections($file) {
@@ -50,9 +53,7 @@ function find_connection($req, $connections, $used_id = null) {
 }
 
 function count_time($from, $to, $connections) {
-    $temp_connections = $connections;
-
-    foreach ($temp_connections as $i => $path) {
+    foreach ($connections as $i => $path) {
         if (
             $path['from_node'] !== $from ||
             $path['used'] ||
@@ -62,10 +63,10 @@ function count_time($from, $to, $connections) {
         } else if ($path['to_node'] === $to) {
             return $path['time'];
         } else {
-            $temp_connections[$i]['used'] = true;
+            $connections[$i]['used'] = true;
             $back_connection_id = find_connection($path, $connections, $i);
-            $temp_connections[$back_connection_id]['used'] = true;
-            $time = count_time($path['to_node'], $to, $temp_connections);
+            $connections[$back_connection_id]['used'] = true;
+            $time = count_time($path['to_node'], $to, $connections);
 
             if ($time !== -1) {
                 return $path['time'] + $time;
@@ -77,6 +78,8 @@ function count_time($from, $to, $connections) {
 }
 
 function handle_request($req, $connections) {
+    global $results;
+
     switch ($req['request_type']) {
         case '-1':
             $connection_id = find_connection($req, $connections);
@@ -88,7 +91,7 @@ function handle_request($req, $connections) {
             break;
         case '?':
             $time = count_time($req['from_node'], $req['to_node'], $connections);
-            var_dump($time);
+            $results[] = $time;
             break;
         default:
             $connection_id = find_connection($req, $connections);
@@ -115,18 +118,18 @@ function handle_request($req, $connections) {
 }
 
 function main() {
-    global $write_result;
+    global $write_result, $results;
 
     $file = fopen('./input.txt','r') or die("не удалось открыть файл с входными данными");
     $connections = parse_connections($file);
     $requests = parse_requests($file);
-    $results = [];
 
     foreach ($requests as $req) {
         $connections = handle_request($req, $connections);
     }
 
     fclose($file);
+    $write_result(implode("\n", $results));
 }
 
 main();
