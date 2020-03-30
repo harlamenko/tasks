@@ -13,12 +13,6 @@ function parse_lines($file) {
     return $lines;
 }
 
-function write_result($result) {
-    $output = fopen('./output.txt','w');
-    fwrite($output, $result);
-    fclose($output);
-}
-
 function humanize_bet_info($bet) {
     $new_bet = [];
     
@@ -60,8 +54,7 @@ function main() {
         $money += ($bet['winner'] == $match['winner'] ? $money_after_win : 0) - ($bet['money']);
     }
 
-    write_result($money);
-    
+    $write_result($money);
     fclose($file);
 }
 

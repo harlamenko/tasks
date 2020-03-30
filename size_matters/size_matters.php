@@ -22,12 +22,6 @@ function prepare($line, $IPv6_segments_len) {
     return $IPv6;
 }
 
-function write_result($result) {
-    $output = fopen('./output.txt','w');
-    fwrite($output, $result);
-    fclose($output);
-}
-
 function main() {
     global $write_result;
 
@@ -40,7 +34,7 @@ function main() {
     }
     
     fclose($file);
-    write_result(implode("\n", $results));
+    $write_result(implode("\n", $results));
 }
 
 main();
